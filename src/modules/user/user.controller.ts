@@ -6,36 +6,41 @@ import { UserService } from './user.service';
 @UseGuards(AuthGuard())
 @Controller('users')
 export class UserController {
-    constructor(private readonly _userService: UserService){}
+    constructor(private readonly _userService: UserService) { }
 
     @Get(':id')
-    async getUser(@Param('id', ParseIntPipe) id: number) : Promise<User> {
+    async getUser(@Param('id', ParseIntPipe) id: number): Promise<User> {
         const user = await this._userService.get(id);
         return user;
     }
 
     @Get()
-    async getUsers() : Promise<User[]> {
+    async getUsers(): Promise<User[]> {
         const users = await this._userService.getAll();
         return users;
     }
 
     @Post()
-    async createUser(@Body() user: User) : Promise<User> {
+    async createUser(@Body() user: User): Promise<User> {
         const userCreated = await this._userService.create(user);
         return userCreated;
     }
 
     @Patch(':id')
-    async updateUser(@Param('id', ParseIntPipe) id: number, @Body() user: User) : Promise<boolean> {
+    async updateUser(@Param('id', ParseIntPipe) id: number, @Body() user: User): Promise<boolean> {
         const userUpdated = await this._userService.update(id, user);
         return true;
     }
 
     @Delete(':id')
-    async deleteUser(@Param('id', ParseIntPipe) id: number) : Promise<boolean> {
+    async deleteUser(@Param('id', ParseIntPipe) id: number): Promise<boolean> {
         await this._userService.delete(id);
         return true;
+    }
+
+    @Post('/setrole/:userId/:roleId')
+    async setRoleToUser(@Param('userId', ParseIntPipe) userId: number, @Param('roleId', ParseIntPipe) roleId: number): Promise<boolean> {
+        return await this._userService.setRoleToUser(userId, roleId);
     }
 
 }
